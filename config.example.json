@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "store_prompt_chars": 4000,
+  "database_path": "~/.agent-tracker/tracker.sqlite3",
+  "jsonl_path": "~/.agent-tracker/runs.jsonl",
+  "require_evidence_for_accept": true
+}
