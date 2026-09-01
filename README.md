@@ -29,6 +29,9 @@ Agent Run Tracker is built to answer questions such as:
 - How often does an agent report success and get rejected later by a human?
 - How much useful information comes from failed experiments?
 - How much token overhead does the tracker itself add?
+- How long does one human-agent iteration take?
+- How quickly do I test an agent result and send the next useful correction?
+- How many substantive feedback cycles do I complete per day?
 
 The main idea is that the scarce resource is human attention. More tokens are useful when they produce more accepted work with less human supervision.
 
@@ -230,6 +233,7 @@ Example:
 Agent Run Tracker · last 7 days
 Work tokens: 2.96B | Tracker overhead: 14.2M | Runs: 87
 Strict waste rate (rejected only): 17.4%
+Interaction efficiency: agent turnaround 31.8m avg | human feedback latency 9.6m avg | feedback cycles/day 12.4
 ```
 
 ## Useful metrics
@@ -261,6 +265,30 @@ This estimates how much trust to place in agent completion claims.
 ```text
 tracker_overhead_tokens / work_tokens
 ```
+
+### Agent turnaround latency
+
+```text
+run.work_ended_at - run.started_at
+```
+
+This is already stored as `wall_seconds`. It approximates the time from a substantive human instruction until the agent returns a result that can be judged.
+
+### Human feedback latency
+
+```text
+next_run.started_at - previous_run.work_ended_at
+```
+
+The report computes this only between consecutive tracked runs in the same session. It approximates the time spent inspecting, testing, thinking, and sending the next substantive correction. Long breaks, meals, sleep, or context switches can therefore raise it, so use it as an interaction metric rather than a pure cognitive-speed metric.
+
+### Feedback cycles per day
+
+```text
+tracked_substantive_runs / report_window_days
+```
+
+This is iteration throughput. It should be read together with accepted outcomes, useful negatives, and waste rate. Maximizing cycles while quality falls is not useful.
 
 ### Project-specific benchmark gain
 
