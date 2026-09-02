@@ -21,6 +21,18 @@ If none applies, use `partial`, `useful_negative`, `rejected`, `blocked`, or `un
 
 Human negative feedback overrides agent self-assessment. A passing test only proves the behavior that test covers. Do not claim broader success than the evidence supports.
 
+## Interaction-efficiency metrics
+
+The tracker is also meant to measure the speed of a human-agent research loop, where the human gives direction, waits for an artifact, tests it, and sends the next high-value correction.
+
+Reports derive three interaction metrics automatically from run timestamps:
+
+- `agent turnaround latency`: time from the human source prompt until the agent finishes the run. This is the existing `wall_seconds` field. Lower is better when task difficulty is comparable.
+- `human feedback latency`: time from the end of one run until the next substantive human prompt in the same session. This approximates how long the human takes to inspect, test, think, and provide the next correction. It is only computed for consecutive tracked runs in the same session.
+- `feedback cycles/day`: tracked substantive human-agent cycles divided by the report window in days. This estimates iteration throughput, not raw message count.
+
+Do not interpret these metrics alone as quality. Fast low-quality loops are not better than slower accepted work. Read them together with outcome, acceptance basis, useful-negative rate, and token efficiency.
+
 ## Outcome labels
 
 - `accepted`: requested result is supported by human acceptance or objective evidence.
